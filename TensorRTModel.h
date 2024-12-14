@@ -1,19 +1,26 @@
 #include <string>
 #include <NvInfer.h>
+#include <NvOnnxParser.h>
+#include <iostream>
+#include <fstream>
+#include <memory>
+
+using namespace std;
 
 class TensorRTModel {
 public:
-    TensorRTModel();
+    TensorRTModel(string onnxPath, string trtPath);
     ~TensorRTModel();
-
-    // ONNX 파일을 불러와서 TensorRT 엔진 파일로 변환
-    bool loadEngine(const std::string& onnxModelPath, const std::string& engineFilePath);
+    
+    bool CreateEngine(const std::string& onnxModelPath, const std::string& engineFilePath);
+    bool LoadEngine(const std::string& engineFilePath);
 
 private:
-    nvinfer1::ILogger* gLogger;         // TensorRT 로깅 객체
-    nvinfer1::IBuilder* builder;        // TensorRT 빌더
-    nvinfer1::INetworkDefinition* network; // 네트워크 정의
-    nvinfer1::ICudaEngine* engine;     // CUDA 엔진
+    std::unique_ptr<nvinfer1::ILogger> gLogger;
+    std::unique_ptr<nvinfer1::IBuilder> builder;
+    std::unique_ptr<nvinfer1::INetworkDefinition> network;
+    std::unique_ptr<nvinfer1::IBuilderConfig> config;
+    std::unique_ptr<nvinfer1::ICudaEngine> engine;
 };
 
 

@@ -1,37 +1,37 @@
 #include "pch.h"
-#include <NvOnnxParser.h>
-#include <NvInfer.h>
+#include "TensorRTModel.h"
 #include <iostream>
 #include <fstream>
-#include <memory>
+#include <experimental/filesystem>
 
-class TensorRTModel {
-public:
-    TensorRTModel();
-    ~TensorRTModel();
+using namespace std;
 
-    bool loadEngine(const std::string& onnxModelPath, const std::string& engineFilePath);
-
-private:
-    std::unique_ptr<nvinfer1::ILogger> gLogger;
-    std::unique_ptr<nvinfer1::IBuilder> builder;
-    std::unique_ptr<nvinfer1::INetworkDefinition> network;
-    std::unique_ptr<nvinfer1::IBuilderConfig> config;
-    std::unique_ptr<nvinfer1::ICudaEngine> engine;
-};
-
-TensorRTModel::TensorRTModel() {
+TensorRTModel::TensorRTModel(string onnxPath, string trtPath) {
     gLogger = nullptr;
     builder = std::unique_ptr<nvinfer1::IBuilder>(nvinfer1::createInferBuilder(*gLogger));
     network = std::unique_ptr<nvinfer1::INetworkDefinition>(builder->createNetworkV2(0));
     config = std::unique_ptr<nvinfer1::IBuilderConfig>(builder->createBuilderConfig());
+
+    bool existTrtPath = std::experimental::filesystem::exists(trtPath);
+    if (!existTrtPath)
+    {
+        bool isSucess = CreateEngine(onnxPath, trtPath);        
+        if (isSucess)
+        {
+            //load
+        }
+    }
+    else
+    {
+        //load
+    }    
 }
 
 TensorRTModel::~TensorRTModel() {
-    
+
 }
 
-bool TensorRTModel::loadEngine(const std::string& onnxModelPath, const std::string& engineFilePath) {   
+bool TensorRTModel::CreateEngine(const std::string& onnxModelPath, const std::string& engineFilePath) {   
     auto parser = std::unique_ptr<nvonnxparser::IParser>(nvonnxparser::createParser(*network, *gLogger));
     if (!parser || !parser->parseFromFile(onnxModelPath.c_str(), static_cast<int>(nvinfer1::ILogger::Severity::kERROR))) {
         std::cerr << "Failed to parse ONNX model file!" << std::endl;
@@ -59,3 +59,9 @@ bool TensorRTModel::loadEngine(const std::string& onnxModelPath, const std::stri
 
     return true;
 }
+
+bool TensorRTModel::LoadEngine(const std::string& engineFilePath) {
+
+    return true;
+}
+
