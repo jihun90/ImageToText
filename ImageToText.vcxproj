@@ -112,15 +112,15 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>D:\TensorRT-10.7.0.23.Windows.win10.cuda-12.6\TensorRT-10.7.0.23\include;D:\Cuda\v12.6\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\TensorRT-10.7.0.23.Windows.win10.cuda-12.6\TensorRT-10.7.0.23\include;D:\Cuda\v12.6\include;D:\Opencv\include\</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
-      <AdditionalDependencies>nvinfer_10.lib;cudart.lib;nvonnxparser_10.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>D:\Cuda\v12.6\lib;D:\TensorRT-10.7.0.23.Windows.win10.cuda-12.6\TensorRT-10.7.0.23\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>nvinfer_10.lib;cudart.lib;nvonnxparser_10.lib;opencv_core4.lib;opencv_highgui4.lib;opencv_imgproc4.lib;opencv_imgcodecs4.lib;opencv_core4d.lib;opencv_highgui4d.lib;opencv_imgproc4d.lib;opencv_imgcodecs4d.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>D:\Cuda\v12.6\lib;D:\TensorRT-10.7.0.23.Windows.win10.cuda-12.6\TensorRT-10.7.0.23\lib;D:\Opencv\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -133,7 +133,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>D:\TensorRT-10.7.0.23.Windows.win10.cuda-12.6\TensorRT-10.7.0.23\include;D:\Cuda\v12.6\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\TensorRT-10.7.0.23.Windows.win10.cuda-12.6\TensorRT-10.7.0.23\include;D:\Cuda\v12.6\include;D:\Opencv\include\</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
@@ -142,8 +142,8 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
-      <AdditionalDependencies>nvinfer_10.lib;cudart.lib;nvonnxparser_10.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>D:\Cuda\v12.6\lib;D:\TensorRT-10.7.0.23.Windows.win10.cuda-12.6\TensorRT-10.7.0.23\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>nvinfer_10.lib;cudart.lib;nvonnxparser_10.lib;opencv_core4.lib;opencv_highgui4.lib;opencv_imgproc4.lib;opencv_imgcodecs4.lib;opencv_core4d.lib;opencv_highgui4d.lib;opencv_imgproc4d.lib;opencv_imgcodecs4d.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>D:\Cuda\v12.6\lib;D:\TensorRT-10.7.0.23.Windows.win10.cuda-12.6\TensorRT-10.7.0.23\lib;D:\Opencv\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
