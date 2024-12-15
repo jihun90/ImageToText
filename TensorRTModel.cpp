@@ -5,6 +5,7 @@
 #include <filesystem>
 
 using namespace std;
+using namespace nvinfer1;
 
 class Logger : public nvinfer1::ILogger {
 public:
@@ -16,6 +17,7 @@ public:
 };
 
 Logger gLogger;
+
 TensorRTModel::TensorRTModel(string onnxPath, string trtPath) {
     builder = std::unique_ptr<nvinfer1::IBuilder>(nvinfer1::createInferBuilder(gLogger));
     network = std::unique_ptr<nvinfer1::INetworkDefinition>(builder->createNetworkV2(0));
@@ -27,12 +29,12 @@ TensorRTModel::TensorRTModel(string onnxPath, string trtPath) {
         bool isSucess = CreateEngine(onnxPath, trtPath);        
         if (isSucess)
         {
-            //load
+            LoadEngine(trtPath);
         }
     }
     else
     {
-        //load
+        LoadEngine(trtPath);
     }    
 }
 
@@ -77,7 +79,44 @@ bool TensorRTModel::CreateEngine(const std::string& onnxModelPath, const std::st
     return true;
 }
 
-bool TensorRTModel::LoadEngine(const std::string& engineFilePath) {
+bool TensorRTModel::LoadEngine(const std::string& engineFilePath) 
+{
+    std::ifstream engineFileStream(engineFilePath, std::ios::binary);
+    if (!engineFileStream.good()) {
+        std::cerr << "Error opening .trt file." << std::endl;
+        return -1;
+    }
+
+    std::vector<char> engineData((std::istreambuf_iterator<char>(engineFileStream)),
+        std::istreambuf_iterator<char>());
+    if (engineData.empty()) {
+        std::cerr << "Error reading .trt file." << std::endl;
+        return -1;
+    }
+
+    IRuntime* runtime = createInferRuntime(gLogger);
+    if (!runtime) {
+        std::cerr << "Failed to create inference runtime." << std::endl;
+        return -1;
+    }
+    
+    ICudaEngine* engine = runtime->deserializeCudaEngine(engineData.data(), engineData.size());
+    if (!engine) {
+        std::cerr << "Failed to create the engine from the .trt file." << std::endl;
+        return -1;
+    }
+
+    IExecutionContext* context = engine->createExecutionContext();
+    if (!context) {
+        std::cerr << "Failed to create execution context." << std::endl;
+        return -1;
+    }
+
+
+    context->destroy();
+    engine->destroy();
+    runtime->destroy();
+
 
     return true;
 }
