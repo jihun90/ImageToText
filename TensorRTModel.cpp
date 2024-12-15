@@ -56,7 +56,7 @@ bool TensorRTModel::CreateEngine(const std::string& onnxModelPath, const std::st
 
     /*string temp = inputTensor->getName();*/
     config->addOptimizationProfile(profile);     
-    config->setMemoryPoolLimit(nvinfer1::MemoryPoolType::kWORKSPACE, 1 << 30);  
+    /*config->setMemoryPoolLimit(nvinfer1::MemoryPoolType::kWORKSPACE, 1 << 30);  */
 
 
     engine = std::unique_ptr<nvinfer1::ICudaEngine>(builder->buildEngineWithConfig(*network, *config));
@@ -71,7 +71,29 @@ bool TensorRTModel::CreateEngine(const std::string& onnxModelPath, const std::st
         std::cerr << "Failed to save engine file!" << std::endl;
         return false;
     }
+    
     engineFile.write(reinterpret_cast<const char*>(serializedEngine->data()), serializedEngine->size());
+    engineFile.clear();
+    engineFile.close();
+
+    serializedEngine.reset();
+    serializedEngine.release();    
+
+    parser.reset();
+    parser.release();
+
+    engine.reset();
+    engine.release();
+
+    config.reset();
+    config.release();
+
+    network.reset();
+    network.release();
+
+    builder.reset();
+    builder.release();    
+    
 
     return true;
 }
@@ -101,7 +123,10 @@ bool TensorRTModel::LoadEngine(const std::string& engineFilePath)
     if (!engine) {
         std::cerr << "Failed to create the engine from the .trt file." << std::endl;
         return -1;
-    }
+    }    
+
+    engineFileStream.clear();
+    engineFileStream.close();    
 
     return true;
 }
