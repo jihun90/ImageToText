@@ -135,3 +135,34 @@ cv::Mat TensorRTModel::PreprocessImage(const std::string& imagePath, int inputHe
 
     return img;
 }
+
+void TensorRTModel::infer(ICudaEngine* engine, const std::vector<float>& inputImage, int inputHeight, int inputWidth) {    
+    IExecutionContext* context = engine->createExecutionContext();
+    if (!context) {
+        std::cerr << "Failed to create execution context" << std::endl;
+        exit(-1);
+    }
+    
+    float* inputData;
+    size_t inputSize = inputHeight * inputWidth;
+    cudaMalloc((void**)&inputData, inputSize * sizeof(float));    
+    cudaMemcpy(inputData, inputImage.data(), inputSize * sizeof(float), cudaMemcpyHostToDevice);
+    
+    float* outputData;
+    size_t outputSize = 1000; // 출력 크기 (모델에 맞게 변경)
+    cudaMalloc((void**)&outputData, outputSize * sizeof(float));
+    
+    void* buffers[] = { inputData, outputData };
+    
+    context->executeV2(buffers);
+    
+    std::vector<float> output(outputSize);
+    cudaMemcpy(output.data(), outputData, outputSize * sizeof(float), cudaMemcpyDeviceToHost);
+    
+    int maxIndex = std::distance(output.begin(), std::max_element(output.begin(), output.end()));
+    std::cout << "Predicted label: " << maxIndex << std::endl;
+    
+    cudaFree(inputData);
+    cudaFree(outputData);
+    delete context;
+}
