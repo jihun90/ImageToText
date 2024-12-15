@@ -31,8 +31,7 @@ public:
 private:    
     Logger gLogger;
     IRuntime* runtime;
-    ICudaEngine* engine;
-    IExecutionContext* context;
+    ICudaEngine* engine;    
 };
 
 

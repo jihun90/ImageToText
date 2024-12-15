@@ -10,8 +10,7 @@ using namespace std;
 using namespace nvinfer1;
 using namespace cv;
 
-TensorRTModel::TensorRTModel(string onnxPath, string trtPath) {    
-    this->context = nullptr;
+TensorRTModel::TensorRTModel(string onnxPath, string trtPath) {        
     this->engine = nullptr;
     this->runtime = nullptr;
 
@@ -22,13 +21,7 @@ TensorRTModel::TensorRTModel(string onnxPath, string trtPath) {
     }    
 }
 
-TensorRTModel::~TensorRTModel() {
-    
-    if (context != nullptr) {
-        delete context;
-        context = nullptr;
-    }
-
+TensorRTModel::~TensorRTModel() {        
     if (engine != nullptr) {
         delete engine;
         engine = nullptr;
@@ -111,12 +104,6 @@ bool TensorRTModel::LoadEngine(const std::string& engineFilePath)
         return -1;
     }
 
-    /*this->context = engine->createExecutionContext();
-    if (!context) {
-        std::cerr << "Failed to create execution context." << std::endl;
-        return -1;
-    }*/
-
     return true;
 }
 
@@ -149,7 +136,7 @@ void TensorRTModel::infer(ICudaEngine* engine, const std::vector<float>& inputIm
     cudaMemcpy(inputData, inputImage.data(), inputSize * sizeof(float), cudaMemcpyHostToDevice);
     
     float* outputData;
-    size_t outputSize = 1000; // 출력 크기 (모델에 맞게 변경)
+    size_t outputSize = 1000; 
     cudaMalloc((void**)&outputData, outputSize * sizeof(float));
     
     void* buffers[] = { inputData, outputData };
