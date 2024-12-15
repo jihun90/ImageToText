@@ -121,12 +121,6 @@ bool TensorRTModel::LoadEngine(const std::string& engineFilePath)
         std::cerr << "Failed to create execution context." << std::endl;
         return -1;
     }
-
-    
-    delete context;
-    delete engine;
-    delete runtime;
-
     return true;
 }
 
