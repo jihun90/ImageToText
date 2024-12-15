@@ -7,17 +7,6 @@
 using namespace std;
 using namespace nvinfer1;
 
-class Logger : public nvinfer1::ILogger {
-public:
-    void log(Severity severity, const char* msg) noexcept override {
-        // Ignore INFO messages
-        if (severity != Severity::kERROR && severity != Severity::kINTERNAL_ERROR) return;
-        std::cerr << "TensorRT: " << msg << std::endl;
-    }
-};
-
-Logger gLogger;
-
 TensorRTModel::TensorRTModel(string onnxPath, string trtPath) {
     builder = std::unique_ptr<nvinfer1::IBuilder>(nvinfer1::createInferBuilder(gLogger));
     network = std::unique_ptr<nvinfer1::INetworkDefinition>(builder->createNetworkV2(0));
@@ -112,11 +101,10 @@ bool TensorRTModel::LoadEngine(const std::string& engineFilePath)
         return -1;
     }
 
-
-    context->destroy();
-    engine->destroy();
-    runtime->destroy();
-
+    
+    delete context;
+    delete engine;
+    delete runtime;
 
     return true;
 }
