@@ -12,4 +12,12 @@ namespace ImageToText {
 	{
 		return new TensorRTModel(onnxPath, trtPath);
 	};
+
+	bool LoadEngine(TensorRTHandle handle)
+	{
+		TensorRTModel* engineInstance = static_cast<TensorRTModel*>(handle);
+		engineInstance->LoadEngine(trtPath);
+
+		return true;
+	}
 }
