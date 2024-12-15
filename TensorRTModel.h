@@ -3,9 +3,11 @@
 #include <NvInfer.h>
 #include <memory>
 #include <iostream>
+#include <opencv2/opencv.hpp>
 
 using namespace std;
 using namespace nvinfer1;
+using namespace cv;
 
 class Logger : public nvinfer1::ILogger {
 public:
@@ -23,6 +25,7 @@ public:
     
     bool CreateEngine(const std::string& onnxModelPath, const std::string& engineFilePath);
     bool LoadEngine(const std::string& engineFilePath);
+    cv::Mat PreprocessImage(const std::string& imagePath, int inputHeight, int inputWidth);
 
 private:    
     Logger gLogger;

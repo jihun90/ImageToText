@@ -3,9 +3,12 @@
 #include <iostream>
 #include <fstream>
 #include <filesystem>
+#include <vector>
+#include <opencv2/opencv.hpp>
 
 using namespace std;
 using namespace nvinfer1;
+using namespace cv;
 
 TensorRTModel::TensorRTModel(string onnxPath, string trtPath) {    
     this->context = nullptr;
@@ -96,7 +99,7 @@ bool TensorRTModel::LoadEngine(const std::string& engineFilePath)
         return -1;
     }
 
-    this->runtime = createInferRuntime(gLogger);
+    this->runtime = createInferRuntime(this->gLogger);
     if (!runtime) {
         std::cerr << "Failed to create inference runtime." << std::endl;
         return -1;
@@ -117,3 +120,18 @@ bool TensorRTModel::LoadEngine(const std::string& engineFilePath)
     return true;
 }
 
+cv::Mat TensorRTModel::PreprocessImage(const std::string& imagePath, int inputHeight, int inputWidth)
+{
+    cv::Mat img = cv::imread(imagePath, cv::IMREAD_GRAYSCALE);
+    if (img.empty()) {
+        std::cerr << "Failed to load image: " << imagePath << std::endl;
+        exit(-1);
+    }
+
+    cv::resize(img, img, cv::Size(inputWidth, inputHeight));
+
+    img.convertTo(img, CV_32F, 1.0 / 255.0);
+
+
+    return img;
+}
