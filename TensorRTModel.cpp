@@ -7,10 +7,10 @@
 using namespace std;
 using namespace nvinfer1;
 
-TensorRTModel::TensorRTModel(string onnxPath, string trtPath) {
-    builder = std::unique_ptr<nvinfer1::IBuilder>(nvinfer1::createInferBuilder(gLogger));
-    network = std::unique_ptr<nvinfer1::INetworkDefinition>(builder->createNetworkV2(0));
-    config = std::unique_ptr<nvinfer1::IBuilderConfig>(builder->createBuilderConfig());
+TensorRTModel::TensorRTModel(string onnxPath, string trtPath) {    
+    context = nullptr;
+    engine = nullptr;
+    runtime = nullptr;
 
     bool existTrtPath = std::filesystem::exists(trtPath);
     if (!existTrtPath)
@@ -28,10 +28,31 @@ TensorRTModel::TensorRTModel(string onnxPath, string trtPath) {
 }
 
 TensorRTModel::~TensorRTModel() {
+    
+    if (context != nullptr) {
+        delete context;
+        context = nullptr;
+    }
+
+    if (engine != nullptr) {
+        delete engine;
+        engine = nullptr;
+    }
+
+    if (runtime != nullptr) {
+        delete runtime;
+        runtime = nullptr;
+    }
 
 }
 
-bool TensorRTModel::CreateEngine(const std::string& onnxModelPath, const std::string& engineFilePath) {   
+bool TensorRTModel::CreateEngine(const std::string& onnxModelPath, const std::string& engineFilePath) 
+{   
+    std::unique_ptr<nvinfer1::IBuilder> builder = std::unique_ptr<nvinfer1::IBuilder>(nvinfer1::createInferBuilder(gLogger));
+    std::unique_ptr<nvinfer1::INetworkDefinition> network = std::unique_ptr<nvinfer1::INetworkDefinition>(builder->createNetworkV2(0));
+    std::unique_ptr<nvinfer1::IBuilderConfig> config = std::unique_ptr<nvinfer1::IBuilderConfig>(builder->createBuilderConfig());
+    std::unique_ptr<nvinfer1::ICudaEngine> engine;
+
     auto parser = std::unique_ptr<nvonnxparser::IParser>(nvonnxparser::createParser(*network, gLogger));
     if (!parser || !parser->parseFromFile(onnxModelPath.c_str(), static_cast<int>(nvinfer1::ILogger::Severity::kERROR))) {
         std::cerr << "Failed to parse ONNX model file!" << std::endl;
@@ -83,19 +104,19 @@ bool TensorRTModel::LoadEngine(const std::string& engineFilePath)
         return -1;
     }
 
-    IRuntime* runtime = createInferRuntime(gLogger);
+    this->runtime = createInferRuntime(gLogger);
     if (!runtime) {
         std::cerr << "Failed to create inference runtime." << std::endl;
         return -1;
     }
     
-    ICudaEngine* engine = runtime->deserializeCudaEngine(engineData.data(), engineData.size());
+    this->engine = runtime->deserializeCudaEngine(engineData.data(), engineData.size());
     if (!engine) {
         std::cerr << "Failed to create the engine from the .trt file." << std::endl;
         return -1;
     }
 
-    IExecutionContext* context = engine->createExecutionContext();
+    this->context = engine->createExecutionContext();
     if (!context) {
         std::cerr << "Failed to create execution context." << std::endl;
         return -1;

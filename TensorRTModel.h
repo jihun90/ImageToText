@@ -24,11 +24,10 @@ public:
     bool LoadEngine(const std::string& engineFilePath);
 
 private:    
-    Logger gLogger;
-    std::unique_ptr<nvinfer1::IBuilder> builder;
-    std::unique_ptr<nvinfer1::INetworkDefinition> network;
-    std::unique_ptr<nvinfer1::IBuilderConfig> config;
-    std::unique_ptr<nvinfer1::ICudaEngine> engine;
+    Logger gLogger;   
+    IRuntime* runtime;
+    ICudaEngine* engine;
+    IExecutionContext* context;
 };
 
 
