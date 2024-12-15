@@ -8,22 +8,14 @@ using namespace std;
 using namespace nvinfer1;
 
 TensorRTModel::TensorRTModel(string onnxPath, string trtPath) {    
-    context = nullptr;
-    engine = nullptr;
-    runtime = nullptr;
+    this->context = nullptr;
+    this->engine = nullptr;
+    this->runtime = nullptr;
 
     bool existTrtPath = std::filesystem::exists(trtPath);
     if (!existTrtPath)
     {
-        bool isSucess = CreateEngine(onnxPath, trtPath);        
-        if (isSucess)
-        {
-            LoadEngine(trtPath);
-        }
-    }
-    else
-    {
-        LoadEngine(trtPath);
+        bool isSucess = CreateEngine(onnxPath, trtPath);                
     }    
 }
 
@@ -116,11 +108,12 @@ bool TensorRTModel::LoadEngine(const std::string& engineFilePath)
         return -1;
     }
 
-    this->context = engine->createExecutionContext();
+    /*this->context = engine->createExecutionContext();
     if (!context) {
         std::cerr << "Failed to create execution context." << std::endl;
         return -1;
-    }
+    }*/
+
     return true;
 }
 

@@ -5,6 +5,7 @@
 #include <iostream>
 
 using namespace std;
+using namespace nvinfer1;
 
 class Logger : public nvinfer1::ILogger {
 public:
@@ -24,7 +25,7 @@ public:
     bool LoadEngine(const std::string& engineFilePath);
 
 private:    
-    Logger gLogger;   
+    Logger gLogger;
     IRuntime* runtime;
     ICudaEngine* engine;
     IExecutionContext* context;
