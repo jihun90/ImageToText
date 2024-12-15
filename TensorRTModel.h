@@ -1,8 +1,6 @@
 #include <string>
-#include <NvInfer.h>
 #include <NvOnnxParser.h>
-#include <iostream>
-#include <fstream>
+#include <NvInfer.h>
 #include <memory>
 
 using namespace std;
@@ -15,8 +13,7 @@ public:
     bool CreateEngine(const std::string& onnxModelPath, const std::string& engineFilePath);
     bool LoadEngine(const std::string& engineFilePath);
 
-private:
-    std::unique_ptr<nvinfer1::ILogger> gLogger;
+private:    
     std::unique_ptr<nvinfer1::IBuilder> builder;
     std::unique_ptr<nvinfer1::INetworkDefinition> network;
     std::unique_ptr<nvinfer1::IBuilderConfig> config;

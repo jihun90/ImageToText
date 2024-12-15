@@ -5,8 +5,8 @@
 
 namespace ImageToText {
 
-	string onnxPath = "";
-	string trtPath = "";
+	string onnxPath = "D:\\space\\TestApp\\ocr_model.onnx";
+	string trtPath = "D:\\space\\TestApp\\ocr_model.trt";
 
 	TensorRTHandle CreateEngine()
 	{
