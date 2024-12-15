@@ -123,8 +123,8 @@ cv::Mat TensorRTModel::PreprocessImage(const std::string& imagePath, int inputHe
     return img;
 }
 
-void TensorRTModel::infer(ICudaEngine* engine, const std::vector<float>& inputImage, int inputHeight, int inputWidth) {    
-    IExecutionContext* context = engine->createExecutionContext();
+void TensorRTModel::infer(const std::vector<float>& inputImage, int inputHeight, int inputWidth) {    
+    IExecutionContext* context = this->engine->createExecutionContext();
     if (!context) {
         std::cerr << "Failed to create execution context" << std::endl;
         exit(-1);
