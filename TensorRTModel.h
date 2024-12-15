@@ -1,9 +1,8 @@
+#include "pch.h"
+
 #include <string>
-#include <NvOnnxParser.h>
-#include <NvInfer.h>
 #include <memory>
 #include <iostream>
-#include <opencv2/opencv.hpp>
 
 using namespace std;
 using namespace nvinfer1;
@@ -26,8 +25,7 @@ public:
     bool CreateEngine(const std::string& onnxModelPath, const std::string& engineFilePath);
     bool LoadEngine(const std::string& engineFilePath);
     cv::Mat PreprocessImage(const std::string& imagePath, int inputHeight, int inputWidth);
-    void infer(const std::vector<float>& inputImage, int inputHeight, int inputWidth);
-
+    void infer(const cv::Mat& inputImage, int inputHeight, int inputWidth);    
 private:    
     Logger gLogger;
     IRuntime* runtime;

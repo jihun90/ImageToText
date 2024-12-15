@@ -20,4 +20,13 @@ namespace ImageToText {
 
 		return true;
 	}
+
+	bool Run(TensorRTHandle handle, std::string& imagePath, int imageHeight, int imageWidth)
+	{
+		TensorRTModel* engineInstance = static_cast<TensorRTModel*>(handle);			
+		/*engineInstance->infer(engineInstance->PreprocessImage(imagePath, imageHeight, imageWidth), imageHeight, imageWidth);*/
+		engineInstance->infer(engineInstance->PreprocessImage(imagePath, 256, 256), 256, 256);
+
+		return true;
+	}
 }

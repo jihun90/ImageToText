@@ -4,7 +4,6 @@
 #include <fstream>
 #include <filesystem>
 #include <vector>
-#include <opencv2/opencv.hpp>
 
 using namespace std;
 using namespace nvinfer1;
@@ -108,22 +107,28 @@ bool TensorRTModel::LoadEngine(const std::string& engineFilePath)
 }
 
 cv::Mat TensorRTModel::PreprocessImage(const std::string& imagePath, int inputHeight, int inputWidth)
-{
-    cv::Mat img = cv::imread(imagePath, cv::IMREAD_GRAYSCALE);
+{            
+    //cv::Mat img = cv::Mat::zeros(100, 100, CV_8UC1);  // CV_8UC1은 8비트 단일 채널 이미지 (흑백 이미지)    
+    //putText(img, "Hello World", cv::Point(10, 50), FONT_HERSHEY_SIMPLEX, 1, cv::Scalar(255, 255, 255), 2);    
+    //
+    //cv::Mat img = cv::imread(imagePath, cv::IMREAD_COLOR);    
+    
+    cv::Mat img = cv::Mat::zeros(256, 256, CV_8UC3);  // 8비트, 3채널 (BGR)    
+    cv::circle(img, cv::Point(50, 50), 100, cv::Scalar(0, 255, 0), -1);
+
     if (img.empty()) {
         std::cerr << "Failed to load image: " << imagePath << std::endl;
         exit(-1);
     }
 
-    cv::resize(img, img, cv::Size(inputWidth, inputHeight));
-
-    img.convertTo(img, CV_32F, 1.0 / 255.0);
-
+    //cv::resize(img, img, cv::Size(100, 100));
+    cv::imwrite("test123.jpg", img);
+    img.convertTo(img, CV_8UC1, 1.0 / 255.0);
 
     return img;
 }
 
-void TensorRTModel::infer(const std::vector<float>& inputImage, int inputHeight, int inputWidth) {    
+void TensorRTModel::infer(const cv::Mat& inputImage, int inputHeight, int inputWidth) {
     IExecutionContext* context = this->engine->createExecutionContext();
     if (!context) {
         std::cerr << "Failed to create execution context" << std::endl;
@@ -133,7 +138,7 @@ void TensorRTModel::infer(const std::vector<float>& inputImage, int inputHeight,
     float* inputData;
     size_t inputSize = inputHeight * inputWidth;
     cudaMalloc((void**)&inputData, inputSize * sizeof(float));    
-    cudaMemcpy(inputData, inputImage.data(), inputSize * sizeof(float), cudaMemcpyHostToDevice);
+    cudaMemcpy(inputData, inputImage.data, inputSize * sizeof(float), cudaMemcpyHostToDevice);
     
     float* outputData;
     size_t outputSize = 1000; 

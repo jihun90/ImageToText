@@ -10,4 +10,28 @@
 // 여기에 미리 컴파일하려는 헤더 추가
 #include "framework.h"
 
+// C++ 표준 라이브러리
+#include <iostream>
+#include <vector>
+#include <string>
+#include <algorithm>
+#include <memory>
+
+// C 라이브러리
+#include <stdio.h>
+#include <stdlib.h>
+
+// Windows API (필요한 경우)
+#include <windows.h>
+
+// OpenCV 라이브러리 (예시로 OpenCV 포함)
+#include <opencv2/opencv.hpp>
+
+// TensorRT 헤더 파일 (이 예시에서 필요한 경우)
+#include <NvInfer.h>
+#include <NvOnnxParser.h>
+
+// CUDA 헤더 파일 (필요한 경우)
+#include <cuda_runtime.h>
+
 #endif //PCH_H
